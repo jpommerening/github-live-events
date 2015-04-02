@@ -20,7 +20,7 @@ server.pre( function( req, res, next ) {
    next();
 } );
 
-server.get( '/console', function( req, res, next ) {
+server.get( '/', function( req, res, next ) {
    res.setHeader( 'Content-Type', 'text/html' );
    fs.createReadStream( 'static/index.html' ).pipe( res );
 } );
