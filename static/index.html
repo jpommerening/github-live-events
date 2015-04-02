@@ -1,0 +1,14 @@
+<style>
+   pre {
+      display: block;
+   }
+</style>
+<script>
+   var sse = new EventSource( '/sse' );
+   sse.addEventListener( 'event', function( event ) {
+      console.log( event );
+      var pre = document.createElement( 'pre' );
+      pre.innerHTML = event.data;
+      document.body.appendChild( pre );
+   } );
+</script>
