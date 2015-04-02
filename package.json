@@ -12,10 +12,6 @@
   "bugs": {
     "url": "https://github.com/jpommerening/github-live-events.git"
   },
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
   "engines": {
     "node": "0.10.x"
   },

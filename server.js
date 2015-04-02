@@ -1,5 +1,4 @@
 var restify = require( 'restify' );
-var debug = require( 'debug' )( 'http' );
 var fs = require( 'fs' );
 
 var package = require( './package.json' );
