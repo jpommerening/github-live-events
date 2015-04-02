@@ -36,7 +36,7 @@ server.use( restify.CORS( {
 } ) );
 */
 
-server.listen( 8080, function() {
+server.listen( process.env.PORT || 5000, function() {
    server.log.info( '%s listening %s', server.name, server.url );
 } );
 

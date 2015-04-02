@@ -1,12 +1,24 @@
 {
   "name": "github-live-events",
+  "description": "A minimal nodejs server/proxy for authenticating with github and pushing new events to clients",
   "version": "0.0.1",
   "license": "MIT",
-  "dependencies": {
-    "restify": "~3.0.1",
-    "bunyan": "~1.3.4"
+  "author": "Jonas Pommerening <jonas.pommerening@gmail.com>",
+  "homepage": "github-live-events.herokuapp.com",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jpommerening/github-live-events.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jpommerening/github-live-events.git"
   },
   "engines": {
     "node": "0.10.x"
+  },
+  "dependencies": {
+    "restify": "~3.0.1"
+  },
+  "devDependencies": {
+    "bunyan": "~1.3.4"
   }
 }
