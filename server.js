@@ -2,6 +2,7 @@ var restify = require( 'restify' );
 var fs = require( 'fs' );
 var crypto = require( 'crypto' );
 
+var package = require( './package.json' );
 var middleware = require( './lib/middleware' );
 var github = require( './lib/github' );
 
