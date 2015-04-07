@@ -12,13 +12,20 @@ var server = restify.createServer( {
    acceptable: [ 'text/event-stream' ]
 } );
 
+var config = {
+   port:        process.env.PORT         || process.env.npm_package_config_port         || package.config.port,
+   hostname:    process.env.HOSTNAME     || process.env.npm_package_config_hostname     || package.config.hostname,
+   logLevel:    process.env.LOG_LEVEL    || process.env.npm_package_config_log_level    || package.config.log_level,
+   secretToken: process.env.SECRET_TOKEN || process.env.npm_package_config_secret_token
+};
+
 server.pre( function( req, res, next ) {
    req.log.info( '%s %s', req.method, req.url );
    next();
 } );
 
 server.use( restify.queryParser() );
-server.use( github.bodyParser( { secretToken: process.env.SECRET_TOKEN } ) );
+server.use( github.bodyParser( { secretToken: config.secretToken } ) );
 
 server.get( '/', function( req, res, next ) {
    res.setHeader( 'Content-Type', 'text/html' );
@@ -30,14 +37,15 @@ server.post( '/webhook', middleware.webhook );
 
 /*
 server.use( restify.conditionalRequest() );
+*/
+
 server.use( restify.gzipResponse() );
 server.use( restify.CORS( {
    origins: [ '*' ]
 } ) );
-*/
 
-server.listen( process.env.PORT || 5000, function() {
-   server.log.info( '%s listening %s', server.name, server.url );
+server.listen( config.port, config.hostname, function() {
+   server.log.info( '%s listening at %s', server.name, server.url );
 } );
 
-server.log.level('TRACE');
+server.log.level( config.logLevel );
