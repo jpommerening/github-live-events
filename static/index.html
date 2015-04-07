@@ -8,7 +8,7 @@
    sse.addEventListener( 'event', function( event ) {
       console.log( event );
       var pre = document.createElement( 'pre' );
-      pre.innerHTML = event.data;
+      pre.innerHTML = event.data.split( '\n' ).map( JSON.parse ).map( JSON.stringify ).join( '\n' );
       document.body.appendChild( pre );
    } );
 </script>
