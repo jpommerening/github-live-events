@@ -1,8 +1,9 @@
 var restify = require( 'restify' );
 var fs = require( 'fs' );
+var crypto = require( 'crypto' );
 
-var package = require( './package.json' );
 var middleware = require( './lib/middleware' );
+var github = require( './lib/github' );
 
 var server = restify.createServer( {
    name: package.name,
@@ -10,14 +11,13 @@ var server = restify.createServer( {
    acceptable: [ 'text/event-stream' ]
 } );
 
-//server.use( restify.acceptParser( server.acceptable ) );
-server.use( restify.queryParser() );
-server.use( restify.bodyParser() );
-
 server.pre( function( req, res, next ) {
    req.log.info( '%s %s', req.method, req.url );
    next();
 } );
+
+server.use( restify.queryParser() );
+server.use( github.bodyParser( { secretToken: process.env.SECRET_TOKEN } ) );
 
 server.get( '/', function( req, res, next ) {
    res.setHeader( 'Content-Type', 'text/html' );
