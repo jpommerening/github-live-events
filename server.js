@@ -2,22 +2,15 @@ var restify = require( 'restify' );
 var fs = require( 'fs' );
 var crypto = require( 'crypto' );
 
-var package = require( './package.json' );
+var config = require( './lib/config' );
 var middleware = require( './lib/middleware' );
 var github = require( './lib/github' );
 
 var server = restify.createServer( {
-   name: package.name,
-   version: package.version,
+   name: config.name,
+   version: config.version,
    acceptable: [ 'text/event-stream' ]
 } );
-
-var config = {
-   port:        process.env.PORT         || process.env.npm_package_config_port         || package.config.port,
-   hostname:    process.env.HOSTNAME     || process.env.npm_package_config_hostname     || package.config.hostname,
-   logLevel:    process.env.LOG_LEVEL    || process.env.npm_package_config_log_level    || package.config.log_level,
-   secretToken: process.env.SECRET_TOKEN || process.env.npm_package_config_secret_token
-};
 
 server.pre( function( req, res, next ) {
    req.log.info( '%s %s', req.method, req.url );
@@ -25,15 +18,23 @@ server.pre( function( req, res, next ) {
 } );
 
 server.use( restify.queryParser() );
-server.use( github.bodyParser( { secretToken: config.secretToken } ) );
+server.use( github.bodyParser( {
+   webhookSecret: config.webhookSecret
+} ) );
+
+server.get( '/auth', github.authHandler( {
+   clientId: config.clientId,
+   clientSecret: config.clientSecret,
+   githubUrl: config.githubUrl
+} ) );
+server.get( '/api', middleware.api );
+server.get( '/sse', middleware.sse );
+server.post( '/webhook', middleware.webhook );
 
 server.get( '/', function( req, res, next ) {
    res.setHeader( 'Content-Type', 'text/html' );
    fs.createReadStream( 'static/index.html' ).pipe( res );
 } );
-server.get( '/api', middleware.api );
-server.get( '/sse', middleware.sse );
-server.post( '/webhook', middleware.webhook );
 
 /*
 server.use( restify.conditionalRequest() );
