@@ -1,4 +1,4 @@
-var package = require( '../package.json' );
+var package = require( './package.json' );
 
 function pick( source, mapkey, keys ) {
    return keys.reduce( function( object, key ) {

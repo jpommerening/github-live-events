@@ -3,7 +3,9 @@
       display: block;
    }
 </style>
+<script src="/socket.io/socket.io.js"></script>
 <script>
+   /*
    var sse = new EventSource( '/sse' );
    sse.addEventListener( 'event', function( event ) {
       console.log( event );
@@ -11,4 +13,15 @@
       pre.innerHTML = event.data.split( '\n' ).map( JSON.parse ).map( JSON.stringify ).join( '\n' );
       document.body.appendChild( pre );
    } );
+   */
+
+var socket = io();
+socket.on( 'connect', function() {
+} );
+socket.on( '*', function( event ) {
+   console.log( arguments );
+   var pre = document.createElement( 'pre' );
+   pre.innerHTML = [].slice.apply( arguments ).map( JSON.stringify ).join( '\n' );
+   document.body.appendChild( pre );
+} );
 </script>

@@ -1,16 +1,14 @@
 var restify = require( 'restify' );
 var fs = require( 'fs' );
-var crypto = require( 'crypto' );
 
-var config = require( './lib/config' );
-var middleware = require( './lib/middleware' );
+var config = require( './config' );
 var github = require( './lib/github' );
 
 var server = restify.createServer( {
-   name: config.name,
-   version: config.version,
-   acceptable: [ 'text/event-stream' ]
+   name: config.name + ' ' + config.version
 } );
+
+var io = require( 'socket.io' ).listen( server.server );
 
 server.pre( function( req, res, next ) {
    req.log.info( '%s %s', req.method, req.url );
@@ -27,9 +25,17 @@ server.get( '/auth', github.authHandler( {
    clientSecret: config.clientSecret,
    githubUrl: config.githubUrl
 } ) );
-server.get( '/api', middleware.api );
-server.get( '/sse', middleware.sse );
-server.post( '/webhook', middleware.webhook );
+
+server.get( '/api', function( req, res, next ) {
+} );
+
+server.post( '/webhook', function( req, res, next ) {
+   res.send( { msg: 'Got it, thanks!' } );
+   next();
+
+   io.emit( req.header( 'X-GitHub-Event' ), req.body );
+   io.emit( '*', req.body );
+} );
 
 server.get( '/', function( req, res, next ) {
    res.setHeader( 'Content-Type', 'text/html' );
