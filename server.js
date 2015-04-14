@@ -33,6 +33,7 @@ server.post( '/webhook', function( req, res, next ) {
    res.send( { msg: 'Got it, thanks!' } );
    next();
 
+   req.log.trace( req );
    io.emit( req.header( 'X-GitHub-Event' ), req.body );
    io.emit( '*', req.body );
 } );
