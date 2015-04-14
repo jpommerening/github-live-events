@@ -35,9 +35,22 @@ server.post( '/webhook', function( req, res, next ) {
 
    var name = req.header( 'X-GitHub-Event' );
    var event = github.webhookEvent( name, req.body );
+   var emitters = [ io ];
 
-   io.emit( '*', event );
-   io.emit( name, event );
+   if( event.actor ) {
+      emitters.push( io.to( '/users/' + actor.login + '/events' ) );
+   }
+   if( event.org ) {
+      emitters.push( io.to( '/orgs/' + org.login + '/events' ) );
+   }
+   if( event.repo ) {
+      emitters.push( io.to( '/repos/' + repo.owner.login + '/' + repo.name + '/events' ) );
+   }
+
+   emitters.forEach( function( emitter ) {
+      emitter.emit( '*', event );
+      emitter.emit( name, event );
+   } );
 } );
 
 server.get( '/', function( req, res, next ) {
