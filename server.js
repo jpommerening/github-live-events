@@ -38,13 +38,13 @@ server.post( '/webhook', function( req, res, next ) {
    var emitters = [ io ];
 
    if( event.actor ) {
-      emitters.push( io.to( '/users/' + event.actor.login + '/events' ) );
+      emitters.push( io.of( '/users/' + event.actor.login + '/events' ) );
    }
    if( event.org ) {
-      emitters.push( io.to( '/orgs/' + event.org.login + '/events' ) );
+      emitters.push( io.of( '/orgs/' + event.org.login + '/events' ) );
    }
    if( event.repo ) {
-      emitters.push( io.to( '/repos/' + event.repo.owner.login + '/' + event.repo.name + '/events' ) );
+      emitters.push( io.of( '/repos/' + event.repo.owner.login + '/' + event.repo.name + '/events' ) );
    }
 
    emitters.forEach( function( emitter ) {
