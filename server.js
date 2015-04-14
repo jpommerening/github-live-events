@@ -33,9 +33,10 @@ server.post( '/webhook', function( req, res, next ) {
    res.send( { msg: 'Got it, thanks!' } );
    next();
 
-   req.log.trace( req );
-   io.emit( req.header( 'X-GitHub-Event' ), req.body );
-   io.emit( '*', req.body );
+   var event = github.webhookEvent( req.header( 'X-GitHub-Event' ), req.body );
+
+   io.emit( '*', event );
+   io.emit( event.type, event );
 } );
 
 server.get( '/', function( req, res, next ) {
