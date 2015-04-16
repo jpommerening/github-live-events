@@ -44,7 +44,7 @@ server.post( '/webhook', function( req, res, next ) {
       namespaces.push( '/orgs/' + event.org.login + '/events' );
    }
    if( event.repo ) {
-      namespaces.push( '/repos/' + event.repo.owner.login + '/' + event.repo.name + '/events' );
+      namespaces.push( '/repos/' + event.repo.full_name + '/events' );
    }
 
    req.log.trace( 'emit %s to %s', name, namespaces );
