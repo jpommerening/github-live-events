@@ -47,11 +47,15 @@ server.post( '/webhook', function( req, res, next ) {
       namespaces.push( '/repos/' + event.repo.full_name + '/events' );
    }
 
-   req.log.trace( 'emit %s to %s', name, namespaces );
    namespaces.forEach( function( namespace ) {
       var emitter = io.of( namespace );
-      emitter.emit( '*', event );
-      emitter.emit( name, event );
+      var clients = Object.keys( emitter.connected ).length;
+
+      if( clients ) {
+         req.log.trace( 'Emitting %s to %d clients at %s', name, clients, namespace );
+         emitter.emit( '*', event );
+         emitter.emit( name, event );
+      }
    } );
 } );
 
