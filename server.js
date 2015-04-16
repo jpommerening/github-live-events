@@ -35,19 +35,21 @@ server.post( '/webhook', function( req, res, next ) {
 
    var name = req.header( 'X-GitHub-Event' );
    var event = github.webhookEvent( name, req.body );
-   var emitters = [ io ];
+   var namespaces = [ '/' ];
 
    if( event.actor ) {
-      emitters.push( io.of( '/users/' + event.actor.login + '/events' ) );
+      namespaces.push( '/users/' + event.actor.login + '/events' );
    }
    if( event.org ) {
-      emitters.push( io.of( '/orgs/' + event.org.login + '/events' ) );
+      namespaces.push( '/orgs/' + event.org.login + '/events' );
    }
    if( event.repo ) {
-      emitters.push( io.of( '/repos/' + event.repo.owner.login + '/' + event.repo.name + '/events' ) );
+      namespaces.push( '/repos/' + event.repo.owner.login + '/' + event.repo.name + '/events' );
    }
 
-   emitters.forEach( function( emitter ) {
+   req.log.trace( 'emit %s to %s', name, namespaces );
+   namespaces.forEach( function( namespace ) {
+      var emitter = io.of( namespace );
       emitter.emit( '*', event );
       emitter.emit( name, event );
    } );
